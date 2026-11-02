@@ -1,0 +1,10 @@
+@model AuthForm
+@{ ViewData["Title"]="Tạo tài khoản"; }
+<div class="auth-wrap"><section class="auth-story"><span class="eyebrow">CHÀO MỪNG ĐẾN PLAY EDU</span><h1>Kiến thức của bạn.<br /><em>Sân tập</em> của bạn.</h1><p>Học từ tài liệu của chính mình, trong một không gian riêng tư.</p><div class="auth-perk"><span>◉</span><div><strong>20 coin để bắt đầu</strong><p>Chơi thử và replay luôn miễn phí.</p></div></div><div class="auth-perk"><span>▤</span><div><strong>Slide luôn là gốc</strong><p>Mỗi lời giải thích đều có điểm tựa.</p></div></div></section><section class="auth-card"><span class="eyebrow">BẮT ĐẦU HÀNH TRÌNH</span><h2>Tạo tài khoản</h2><p class="muted">Một bước nhỏ để học chủ động hơn.</p>
+<form asp-action="Register" method="post"><div asp-validation-summary="All" class="validation" role="alert"></div><input asp-for="ReturnUrl" type="hidden" />
+<label asp-for="FullName">Họ và tên</label><input asp-for="FullName" autocomplete="name" placeholder="Tên bạn là..." required maxlength="100" />
+<label asp-for="Email">Email</label><input asp-for="Email" type="email" autocomplete="email" placeholder="ban@example.com" required maxlength="255" />
+<label asp-for="Password">Mật khẩu</label><input asp-for="Password" type="password" autocomplete="new-password" placeholder="Tối thiểu 10 ký tự" minlength="10" maxlength="128" required />
+<button class="btn btn-dark full" type="submit">Tạo tài khoản · nhận 20 coin ↗</button></form><p class="auth-bottom">Đã có tài khoản? <a asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">Đăng nhập</a></p>
+</section></div>
+

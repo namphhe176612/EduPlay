@@ -1,0 +1,14 @@
+@model WalletVm
+@inject PlayEdu.Services.AiGateway Ai
+@{ ViewData["Title"]="Ví coin"; }
+<div class="page-content"><div class="page-heading"><div><span class="eyebrow">MINH BẠCH TRONG TỪNG THAO TÁC</span><h1>Ví <em>coin</em> của bạn.</h1><p class="muted">Chỉ dùng coin cho tác vụ có chi phí. Chơi lại và xem kết quả luôn miễn phí.</p></div><div class="coin-pill">◉ @Model.Coin coin</div></div>
+@if(Ai.IsDemo){<div class="pill-note">Đang chạy demo: dựng sa bàn, tra cứu nguồn và luyện tập không gọi AI, không trừ coin. Nâng giới hạn PDF 16–40 trang vẫn là 15 coin/tài liệu.</div>}
+<section class="panel"><h2>Chi phí trước khi bắt đầu</h2><div class="table-wrap"><table><thead><tr><th>THAO TÁC</th><th>CHI PHÍ KHI DÙNG AI THẬT</th><th>MIỄN PHÍ</th></tr></thead><tbody>
+<tr><td>Nạp PDF 1–15 trang</td><td>0 coin</td><td>Luôn miễn phí</td></tr><tr><td>Mở rộng PDF tới 40 trang</td><td>15 coin/tài liệu</td><td>Chỉ thu khi xử lý thành công</td></tr><tr><td>Dựng sa bàn</td><td>3 coin</td><td>Demo miễn phí</td></tr><tr><td>Hỏi về sa bàn</td><td>1 coin/câu</td><td>3 câu đầu mỗi sa bàn</td></tr><tr><td>Luyện tập sâu</td><td>1 coin/3 câu (làm tròn lên)</td><td>1 lượt/ngày UTC, tối đa 6 câu</td></tr><tr><td>Chơi, chơi lại, kết quả</td><td>0 coin</td><td>Không gọi AI</td></tr></tbody></table></div></section>
+<div class="section-heading"><h2>Gói coin dự kiến</h2><span class="tag">CHƯA KẾT NỐI THANH TOÁN</span></div><div class="scenario-grid">
+@foreach(var pack in new[]{("Starter",19000,50),("Standard",39000,120),("Saver",79000,300)}){<section class="panel"><span class="eyebrow">@pack.Item1.ToUpperInvariant()</span><h2>@pack.Item3 coin</h2><p>@pack.Item2.ToString("N0") đ</p><span class="tag">Sắp có · Không nhận thanh toán ở bản này</span></section>}
+</div>
+<section class="panel"><div class="section-heading"><h2>Sổ giao dịch</h2><span class="muted">100 giao dịch mới nhất · UTC</span></div>
+@if(Model.Transactions.Count==0){<p>Chưa có giao dịch.</p>}
+else{<div class="table-wrap"><table><thead><tr><th>THỜI GIAN</th><th>NỘI DUNG</th><th>THAY ĐỔI</th><th>SỐ DƯ SAU</th></tr></thead><tbody>@foreach(var t in Model.Transactions){<tr><td>@t.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td><td>@t.Description<br /><span class="muted">@t.TransactionType</span></td><td>@t.Amount.ToString("+0;-0;0") coin</td><td>@t.BalanceAfter coin</td></tr>}</tbody></table></div>}</section></div>
+

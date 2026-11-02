@@ -1,0 +1,10 @@
+@model DashboardVm
+@{ ViewData["Title"]="Hồ sơ học tập"; var completed=Model.Runs.Where(x=>x.Status=="Completed").ToList(); }
+<div class="page-content"><div class="page-heading"><div><span class="eyebrow">NHÌN LẠI ĐỂ ĐI TIẾP</span><h1>Hồ sơ <em>học tập.</em></h1><p class="muted">Những lần thử tạo nên hành trình của riêng bạn.</p></div><span class="tag">@Model.User.Email</span></div>
+<div class="stat-grid"><div class="stat-card"><span>SA BÀN ĐÃ DỰNG</span><strong>@Model.Scenarios.Count</strong></div><div class="stat-card"><span>LƯỢT HOÀN THÀNH</span><strong>@completed.Count</strong></div><div class="stat-card"><span>ĐIỂM CAO NHẤT</span><strong>@(completed.Select(x=>x.Score??0).DefaultIfEmpty(0).Max().ToString("0.#"))<small> điểm đã chấm</small></strong></div><a class="stat-card mint-card" asp-controller="Wallet" asp-action="Index"><span>SỐ DƯ HIỆN TẠI</span><strong>@Model.User.Coin<small> coin</small></strong></a></div>
+<section class="panel"><h2>Thông tin của bạn</h2><form asp-action="Update" method="post"><label for="fullName">Họ và tên</label><input id="fullName" name="fullName" value="@Model.User.FullName" maxlength="100" required /><button class="btn btn-dark full" type="submit">Lưu thông tin</button></form></section>
+<section class="panel"><h2>Lịch sử lượt chơi</h2>
+@if(Model.Runs.Count==0){<p>Bạn chưa bắt đầu lượt chơi nào.</p>}
+else{<div class="table-wrap"><table><thead><tr><th>SA BÀN</th><th>BẮT ĐẦU (UTC)</th><th>TRẠNG THÁI</th><th>ĐIỂM</th><th></th></tr></thead><tbody>@foreach(var run in Model.Runs){var scenario=Model.Scenarios.FirstOrDefault(x=>x.ScenarioId==run.ScenarioId);<tr><td>@(scenario?.Title??"Sa bàn")</td><td>@run.StartedAt.ToString("dd/MM/yyyy HH:mm")</td><td>@(run.Status=="Completed"?"Đã hoàn thành":"Đang chơi")</td><td>@(run.Score?.ToString("0.#")??"—")</td><td><a asp-controller="Scenarios" asp-action="Play" asp-route-id="@run.RunId">@(run.Status=="Completed"?"Xem kết quả":"Tiếp tục") ↗</a></td></tr>}</tbody></table></div>}</section>
+<div class="pill-note">Radar kỹ năng và điểm bắt lỗi AI chưa được tính ở bản này. Hồ sơ chỉ hiển thị số liệu thực sự đã lưu.</div></div>
+

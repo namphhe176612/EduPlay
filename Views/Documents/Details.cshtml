@@ -1,0 +1,20 @@
+@model LectureFile
+@inject PlayEdu.Services.AiGateway Ai
+@{ ViewData["Title"]=Model.FileName; var page=(int)(ViewData["Page"]??1); var slide=Model.Slides.FirstOrDefault(x=>x.SlideNumber==page); }
+<div class="page-content"><nav class="breadcrumb"><a asp-action="Index">Tài liệu của tôi</a><span>/</span><span>@Model.FileName</span></nav>
+<div class="page-heading"><div><span class="eyebrow">NGUỒN KIẾN THỨC CỦA BẠN</span><h1>@Model.FileName</h1><p class="muted">@Model.TotalPages trang · @Model.Language · Nạp ngày @Model.UploadedAt.ToString("dd/MM/yyyy")</p></div><span class="tag">⌁ CHỈ MÌNH TÔI</span></div>
+<div class="two-col"><section>
+@if((bool)(ViewData["FileExists"]??false)){<iframe class="pdf-frame" src="@Url.Action("Pdf",new{id=Model.FileId})#page=@(page)" title="PDF gốc, trang @(page)"></iframe><p class="form-note"><a asp-action="Pdf" asp-route-id="@Model.FileId" target="_blank" rel="noopener">Mở PDF gốc ở tab mới ↗</a></p>}
+else{<div class="pill-note">Đây là metadata mẫu từ SQL, chưa có PDF thật trên máy chủ. Hãy nạp file của bạn để xem trang gốc.</div>}
+<nav class="pagination" aria-label="Chọn slide">@for(var n=1;n<=Model.TotalPages;n++){<a class="@(n==page?"active":"")" asp-action="Details" asp-route-id="@Model.FileId" asp-route-page="@n" aria-current="@(n==page?"page":null)">@n</a>}</nav>
+<div class="panel"><h3>Văn bản slide @(page)</h3><div class="source-text">@(string.IsNullOrWhiteSpace(slide?.SlideText)?"Trang này chưa trích xuất được văn bản.":slide.SlideText)</div></div>
+</section><aside class="sticky"><section class="panel"><span class="eyebrow">BƯỚC 02 / DỰNG SA BÀN</span><h2>Đưa lý thuyết vào một tình huống.</h2><p>4–6 quyết định, mỗi quyết định có 3 lựa chọn và liên kết về slide nguồn.</p>
+@if(Ai.IsDemo){<div class="pill-note"><strong>Demo miễn phí</strong><br />Kịch bản theo mẫu để thử luồng, dùng trích đoạn PDF của bạn. Chưa có AI sinh tình huống riêng.</div>}
+<form asp-controller="Scenarios" asp-action="Build" method="post" data-ai>
+<input type="hidden" name="fileId" value="@Model.FileId" /><label for="context">Bối cảnh bạn muốn thực hành <small>(tùy chọn)</small></label><textarea id="context" name="context" maxlength="1000" placeholder="Ví dụ: nhóm Marketing của một thương hiệu trà cho sinh viên..."></textarea>
+<p class="form-note">@(Ai.IsDemo?"Demo chưa sử dụng bối cảnh tùy chỉnh.":"Tối đa 1.000 ký tự. Chỉ dựng từ kiến thức có trong slide.")</p>
+<button type="submit" class="btn btn-dark full">Dựng sa bàn · @(Ai.IsDemo?"0":"3") coin ↗</button>
+<div class="busy-box" role="status"><span class="spinner"></span><span data-phase>Đang đọc slide…</span><button type="button" class="quiet-button" data-cancel>Dừng yêu cầu</button></div></form><p class="form-note">Lỗi hoặc hủy: không trừ coin. Chơi và chơi lại luôn miễn phí.</p>
+</section></aside></div></div>
+
+

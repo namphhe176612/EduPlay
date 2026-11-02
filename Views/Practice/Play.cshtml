@@ -1,0 +1,13 @@
+@model DeepPractice
+@using System.Text.Json
+@{ ViewData["Title"]="Luyện tập sâu"; var quiz=JsonSerializer.Deserialize<QuizData>(Model.ResultJson??"{}",JsonDefaults.Options)!; }
+<div class="page-content narrow"><a class="back-link" asp-controller="Scenarios" asp-action="Details" asp-route-id="@Model.ScenarioId">← Về sa bàn</a><span class="eyebrow">CỦNG CỐ TỪ CHÍNH TÀI LIỆU</span><h1>Luyện tập <em>để hiểu sâu.</em></h1>
+@if(quiz.Submitted){<div class="result-hero"><div><h2>Bạn đã hoàn thành.</h2><p>Đọc lại giải thích và mở nguồn cho những câu cần ôn.</p></div><div class="score-ring"><strong>@Model.CorrectAnswers</strong><span>/ @Model.TotalQuestions câu đúng</span></div></div>}
+<form asp-action="Submit" method="post"><input type="hidden" name="id" value="@Model.DeepPracticeId" />
+@for(var i=0;i<quiz.Questions.Count;i++){var q=quiz.Questions[i];<section class="panel quiz-question"><span class="eyebrow">CÂU @(i+1) / @quiz.Questions.Count</span><h3>@q.Question</h3>
+@if(!quiz.Submitted){@for(var k=0;k<q.Options.Count;k++){<label class="radio-option"><input type="radio" name="answers[@i]" value="@k" required /><span>@q.Options[k]</span></label>}}
+else{<div class="quiz-feedback"><strong>@(quiz.Answers![i]==q.Correct?"✓ Đúng":"↻ Cần ôn")</strong><p>Bạn chọn: @q.Options[quiz.Answers![i]]</p><p>Đáp án: @q.Options[q.Correct]</p><p>@q.Why</p></div><a class="source-chip" asp-controller="Documents" asp-action="Details" asp-route-id="@ViewData["FileId"]" asp-route-page="@q.SourceSlide" target="_blank" rel="noopener">▤ Xem slide @q.SourceSlide ↗</a>}
+</section>}
+@if(!quiz.Submitted){<button class="btn btn-dark" type="submit">Nộp bài & xem giải thích ↗</button>}
+</form></div>
+

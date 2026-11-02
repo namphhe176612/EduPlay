@@ -1,0 +1,7 @@
+@model ScenarioData
+@using System.Text.Json
+@{ ViewData["Title"]="Chơi thử"; }
+<div class="page-content narrow"><span class="eyebrow">KHÔNG CẦN TÀI KHOẢN · KHÔNG TỐN COIN</span><h1>Thử một quyết định.<br /><em>Thấy một góc nhìn mới.</em></h1><p class="muted">Bản demo theo mẫu, dùng nội dung Marketing minh họa. Tiến độ chơi thử không được lưu.</p>
+<div id="sample-game" data-scenario="@JsonSerializer.Serialize(Model,JsonDefaults.Options)"><div id="sample-progress" class="pill-note"></div><div class="scene-card"><h2 id="sample-topic"></h2><p id="sample-message" class="scene-message"></p><div id="sample-choices" class="choices"></div><div id="sample-outcome" class="outcome-card" hidden></div><button id="sample-next" type="button" class="btn btn-dark full" hidden>Tình huống tiếp theo →</button></div><div id="sample-source" class="source-text"></div></div>
+<div class="section-heading"><h2>Sẵn sàng dùng PDF của bạn?</h2></div><a class="btn btn-dark" asp-controller="Account" asp-action="Register">Tạo tài khoản miễn phí ↗</a></div>
+

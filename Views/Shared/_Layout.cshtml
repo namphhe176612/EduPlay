@@ -1,0 +1,72 @@
+@inject PlayEdu.Data.GameDbContext Db
+@{
+    var signed = User.Identity?.IsAuthenticated == true;
+    var admin = User.IsInRole("2");
+    var current = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    var balance = signed && !admin ? await Db.Users.Where(x => x.UserId == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value)).Select(x => x.Coin).FirstOrDefaultAsync() : 0;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Biến PDF bài giảng thành tình huống ra quyết định. Thực hành, nhìn thấy hậu quả và học lại từ slide gốc." />
+    <title>@ViewData["Title"] · Play edu</title>
+    <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
+    <script src="~/js/app.js" asp-append-version="true" defer></script>
+</head>
+<body class="@(signed ? "authenticated" : "public")">
+<a class="skip-link" href="#main">Đến nội dung chính</a>
+@if (signed)
+{
+    <aside class="sidebar">
+        <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-mark">p<span>•</span></span>Play edu<span class="brand-dot">.</span></a>
+        <div class="rail-label">KHÔNG GIAN HỌC TẬP</div>
+        @if (!admin)
+        {
+            <nav class="rail-nav" aria-label="Điều hướng chính">
+                <a class="@(current == "Home" && action == "Dashboard" ? "active" : "")" asp-controller="Home" asp-action="Dashboard"><span>◫</span>Tổng quan</a>
+                <a class="@(current == "Documents" ? "active" : "")" asp-controller="Documents" asp-action="Index"><span>▤</span>Tài liệu của tôi</a>
+                <a class="@(action == "Vault" ? "active" : "")" asp-controller="Profile" asp-action="Vault"><span>▱</span>Kho sa bàn</a>
+                <a class="@(current == "Wallet" ? "active" : "")" asp-controller="Wallet" asp-action="Index"><span>◉</span>Ví coin</a>
+                <a class="@(current == "Profile" && action == "Index" ? "active" : "")" asp-controller="Profile" asp-action="Index"><span>♧</span>Hồ sơ học tập</a>
+            </nav>
+            <div class="rail-card"><span class="tiny-label">MỘT CHÚT THỰC HÀNH MỖI NGÀY</span><p>Kiến thức chỉ thật sự là của bạn khi được áp dụng.</p><a asp-controller="Documents" asp-action="Upload">Nạp PDF mới ↗</a></div>
+        }
+        else
+        {
+            <nav class="rail-nav"><a class="active" asp-controller="Admin" asp-action="Index"><span>◫</span>Quản trị hệ thống</a></nav>
+            <div class="rail-card"><strong>Riêng tư theo thiết kế</strong><p>Quản trị viên xem thống kê, không mở PDF của người học.</p></div>
+        }
+        <a class="help-link" asp-controller="Home" asp-action="Help">ⓘ Hướng dẫn sử dụng</a>
+        <div class="rail-footer"><span class="avatar">@(User.Identity!.Name?[..1].ToUpperInvariant())</span><div><strong>@User.Identity!.Name</strong><small>@(admin ? "Quản trị viên" : "Người học Play edu")</small></div></div>
+    </aside>
+}
+<div class="site-main">
+<header class="topbar">
+    @if (!signed)
+    {
+        <a class="brand" asp-controller="Home" asp-action="Index"><span class="brand-mark">p<span>•</span></span>Play edu<span class="brand-dot">.</span></a>
+        <nav class="public-nav"><a asp-controller="Home" asp-action="Index" asp-fragment="how">Cách hoạt động</a><a asp-controller="Home" asp-action="Help">Hướng dẫn</a></nav>
+        <div class="top-actions"><a asp-controller="Account" asp-action="Login" class="quiet-link">Đăng nhập</a><a class="btn btn-dark btn-small" asp-controller="Account" asp-action="Register">Bắt đầu miễn phí ↗</a></div>
+    }
+    else
+    {
+        <div class="top-title"><span class="status-dot"></span>Học từ nguồn. Quyết định có căn cứ.</div>
+        <div class="top-actions">
+            @if (!admin) { <a class="coin-pill" asp-controller="Wallet" asp-action="Index"><span>◉</span> @balance <small>coin</small></a> }
+            <form asp-controller="Account" asp-action="Logout" method="post"><button type="submit" class="quiet-button">Đăng xuất ↗</button></form>
+        </div>
+    }
+</header>
+<main id="main">
+    @if (TempData["Notice"] is string notice) { <div class="flash success" role="status">✓ @notice</div> }
+    @if (TempData["Error"] is string error) { <div class="flash error" role="alert">@error <a asp-controller="Wallet" asp-action="Index">Xem ví coin →</a></div> }
+    @RenderBody()
+</main>
+<footer class="page-footer"><span>Play edu. <span class="muted">Học để thực hành.</span></span><span>Luôn có slide gốc làm điểm tựa.</span></footer>
+</div>
+@await RenderSectionAsync("Scripts",required:false)
+</body>
+</html>
+

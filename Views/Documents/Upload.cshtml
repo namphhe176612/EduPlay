@@ -1,0 +1,10 @@
+@{ ViewData["Title"]="Nạp tài liệu"; }
+<div class="page-content"><a class="back-link" asp-action="Index">← Tài liệu của tôi</a><div class="page-heading"><div><span class="eyebrow">BƯỚC 01 / MANG KIẾN THỨC ĐẾN</span><h1>Bắt đầu từ <em>slide của bạn.</em></h1><p class="muted">Nạp bài giảng PDF, chúng mình giữ nguyên nguồn để bạn luôn đối chiếu được.</p></div></div>
+<div class="two-col"><section class="panel"><form asp-action="Upload" method="post" enctype="multipart/form-data" data-busy>
+<div asp-validation-summary="All" class="validation" role="alert"></div>
+<label class="upload-zone" for="pdf"><span>↥</span><h3>Chọn PDF bài giảng</h3><p>PDF có văn bản · Tối đa 20 MB · Không nhận Word/PowerPoint</p><input type="file" id="pdf" name="pdf" accept=".pdf,application/pdf" required /><p id="file-description" aria-live="polite"></p></label>
+<label for="language">Ngôn ngữ nội dung sa bàn</label><select id="language" name="language"><option value="vi">Tiếng Việt</option><option value="en">English</option><option value="vi-en">Tiếng Việt · giữ thuật ngữ Anh</option><option value="auto">Theo ngôn ngữ tài liệu</option></select>
+<label class="check-label"><input type="checkbox" name="unlockPages" value="true" /><span>Cho phép nạp PDF 16–40 trang với <strong>15 coin / tài liệu</strong>. PDF từ 1–15 trang miễn phí; chỉ thu coin khi xử lý thành công.</span></label>
+<button type="submit" class="btn btn-dark full">Nạp PDF & xem slide ↗</button><div class="busy-box" role="status"><span class="spinner"></span>Đang kiểm tra và trích xuất PDF…</div>
+</form></section><aside><section class="panel"><span class="eyebrow">ĐỂ CÓ TRẢI NGHIỆM TỐT</span><h3>Chọn một chương, học thật sâu.</h3><p>Ưu tiên PDF có thể chọn và sao chép chữ. Với bản scan, hãy OCR trước để hệ thống đọc đúng nội dung.</p><hr /><p>✓ 1–15 trang: miễn phí<br />✓ 16–40 trang: 15 coin<br />✓ Lưu riêng tư theo tài khoản<br />✓ Không đưa file PDF lên thư mục công khai</p></section><div class="pill-note">Nạp file chưa tạo sa bàn. Bạn sẽ xem lại tài liệu trước khi chọn dựng kịch bản.</div></aside></div></div>
+
